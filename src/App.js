@@ -4,7 +4,7 @@ import PanelAdmin from './components/PanelAdmin/PanelAdmin';
 import LoginPage from './components/LoginPage/LoginPage';
 import Product from './components/Product/Product';
 import HomeLayout from './components/layout';
-import ProductForRedux from "./redux/ProductsForRedux"
+
 
 function App() {
   return (
