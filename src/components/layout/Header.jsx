@@ -1,29 +1,28 @@
 import Container from "react-bootstrap/Container";
-
+import { Link } from "react-router-dom";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 
-function HomePage() {
+
+function Header() {
+
   return (
     <>
       <Navbar bg="dark" variant="dark">
         <Container>
           <Navbar.Brand href="#home">نام کاربری</Navbar.Brand>
           <Nav className="me-auto">
-            <Nav.Link href="#home" className="border border-white">
-              محصول یک
-            </Nav.Link>
-            <Nav.Link href="#features" className="border border-white mx-2">
-              محصول دو
-            </Nav.Link>
+            
             <Nav.Link href="#pricing" className="border border-white">
-              محصول سه
+            <Link to="/">
+            <button>بازگشت به صفحه ورود</button>
+            </Link>
+          
             </Nav.Link>
           </Nav>
           <Nav className="me-auto pt-3">
-            <label for="basic-url">Your vanity URL</label>
-            <div class="input-group mb-3">
-              <div class="input-group-prepend mx-2">
+            <div className="input-group mb-3">
+              <div className="input-group-prepend mx-2">
                 <button  className="input-group-text" id="basic-addon3">
                   جستوجو کنید
                 </button>
@@ -42,4 +41,4 @@ function HomePage() {
   );
 }
 
-export default HomePage;
+export default Header;
