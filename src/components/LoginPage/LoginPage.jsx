@@ -1,11 +1,60 @@
-import React from 'react';
+import React, { useEffect,useState } from 'react';
 import "./styleLoginPage.css";
 import { Col, Button, Row, Container, Card, Form } from "react-bootstrap";
+import { Link } from 'react-router-dom';
+import axios from "axios";
+
+
+
 
 const LoginPage = () => {
+
+    const [usersData,setUsersData]=useState()
+    const [inputUser,setInputUser]=useState([{
+        email :"",
+        password:""
+    }])
+
+    const [disabledButton,setDisabledButton]=useState(false)
+
+    const getUser=()=>{
+        axios
+        .get("https://jsonplaceholder.typicode.com/users?_start=0&_limit=2")
+        .then((res)=>{
+            setUsersData(res.data)
+            console.log("usersData is :",usersData)
+        });
+    }
+
+    useEffect(()=>{
+        getUser()
+    },[]);
+
+    const inputHandler=(e)=>{
+        const value=e.target.value
+        setInputUser({
+            ...inputUser,
+            [e.target.name]:value
+        })
+        // console.log(inputUser)
+    }
+
+    const checkedEmail=(e)=>{
+        e.preventDefault()
+        // console.log(usersData[0].email)
+        const emailUser=usersData.find((item)=>
+            item.email===inputUser.email
+        )
+        // console.log("user is find emailUser:", emailUser)
+       if(emailUser){
+        setDisabledButton(true)
+        // console.log("disabledButton id :" ,disabledButton)
+    }
+     
+    }
+
     return ( 
         <div  className="boxLogin">
-
             <Container>
             <Row className="vh-100 d-flex justify-content-center align-items-center">
                 <Col md={8} lg={6} xs={12}>
@@ -17,10 +66,10 @@ const LoginPage = () => {
                         <div className="mb-3">
                         <Form>
                             <Form.Group className="mb-3" controlId="formBasicEmail">
-                            <Form.Label className="text-center">
+                            <Form.Label className="text-center" >
                                 آدرس ایمیل خودرا وارد کنید
                             </Form.Label>
-                            <Form.Control type="email" placeholder="آدرس ایمیل...." />
+                            <Form.Control type="email" placeholder="آدرس ایمیل...."  name="email" onChange={(e)=>inputHandler(e)}/>
                             </Form.Group>
     
                             <Form.Group
@@ -28,7 +77,7 @@ const LoginPage = () => {
                             controlId="formBasicPassword"
                             >
                             <Form.Label>رمز عبود خودرا وارد کنید</Form.Label>
-                            <Form.Control type="password" placeholder="رمز عبور...." onChange={(e)=>console.log(e.target.value)} />
+                            <Form.Control type="password" placeholder="رمز عبور...." name="password" onChange={(e)=>inputHandler(e)} />
                             </Form.Group>
                             <Form.Group
                             className="mb-3"
@@ -41,9 +90,23 @@ const LoginPage = () => {
                             </p>
                             </Form.Group>
                             <div className="d-grid">
-                            <Button variant="dark" type="submit">
-                                وارد شوید
-                            </Button>
+                                {disabledButton===false ?
+                                    <Button onClick={(e)=>checkedEmail(e)} variant="dark" type="submit">
+                                        <Link className='text-white'>
+                                                وارد شوید
+                                        </Link>
+                                    </Button> 
+                                    : 
+                                     <Button  variant="dark" type="submit">
+                                     <Link to='panelAdmin' className='text-white' >
+                                             وارد شوید
+                                     </Link>
+                                    </Button>
+                                    
+                                    }
+                                    
+                                    {/* <button  >test</button> */}
+                                
                             </div>
                         </Form>
                         <div className="mt-3">
