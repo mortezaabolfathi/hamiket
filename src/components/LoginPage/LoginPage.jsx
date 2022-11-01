@@ -3,32 +3,33 @@ import "./styleLoginPage.css";
 import { Col, Button, Row, Container, Card, Form } from "react-bootstrap";
 import { Link } from 'react-router-dom';
 import axios from "axios";
-
+import { useDispatch, useSelector } from 'react-redux';
+import { getUser } from '../../feathers/userFind/usefind';
 
 
 
 const LoginPage = () => {
 
-    const [usersData,setUsersData]=useState()
+    const [usersData,setUsersData]=useState([])
     const [inputUser,setInputUser]=useState([{
         email :"",
         password:""
     }])
-
     const [disabledButton,setDisabledButton]=useState(false)
 
-    const getUser=()=>{
-        axios
-        .get("https://jsonplaceholder.typicode.com/users?_start=0&_limit=2")
-        .then((res)=>{
-            setUsersData(res.data)
-            console.log("usersData is :",usersData)
-        });
-    }
+
+    const dispatch = useDispatch();
+    const users=useSelector(state=>state.users);
 
     useEffect(()=>{
-        getUser()
+        dispatch(getUser())
     },[]);
+    
+    useEffect(()=>{
+        if(users!==undefined){
+            setUsersData(users.users);
+        }
+    },[users])
 
     const inputHandler=(e)=>{
         const value=e.target.value
@@ -36,12 +37,10 @@ const LoginPage = () => {
             ...inputUser,
             [e.target.name]:value
         })
-        // console.log(inputUser)
     }
 
     const checkedEmail=(e)=>{
         e.preventDefault()
-        // console.log(usersData[0].email)
         const emailUser=usersData.find((item)=>
             item.email===inputUser.email
         )

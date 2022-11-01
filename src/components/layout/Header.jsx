@@ -2,9 +2,27 @@ import Container from "react-bootstrap/Container";
 import { Link } from "react-router-dom";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
+import { useDispatch } from "react-redux";
+import { useEffect } from "react";
+// import { searchProduct } from "../../feathers/products/productSlice";
+
+
 
 
 function Header() {
+  
+    //  const dispatch=useDispatch()
+
+    // useEffect(()=>{
+    //   dispatch(searchProduct())
+    // },[])
+
+  const inputHandler=(e)=>{
+    console.log(e.target.value)
+
+  
+  }
+
 
   return (
     <>
@@ -15,16 +33,16 @@ function Header() {
             
             <Nav.Link href="#pricing" className="border border-white">
             <Link to="/">
-            <button>بازگشت به صفحه ورود</button>
+              <button>بازگشت به صفحه ورود</button>
             </Link>
-          
+
             </Nav.Link>
           </Nav>
           <Nav className="me-auto pt-3">
             <div className="input-group mb-3">
               <div className="input-group-prepend mx-2">
                 <button  className="input-group-text" id="basic-addon3">
-                  جستوجو کنید
+                  جستجو کنید
                 </button>
               </div>
               <input
@@ -32,6 +50,7 @@ function Header() {
                 className="form-control bg-secondary bg-secondary-10 border-0 rounded-2"
                 id="basic-url"
                 aria-describedby="basic-addon3"
+                onChange={(e)=>inputHandler(e)}
               />
             </div>
           </Nav>

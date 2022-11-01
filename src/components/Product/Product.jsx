@@ -5,41 +5,56 @@ import { Modal } from "react-bootstrap";
 import ModalEditProduct from "../Modal/ModalEditProduct";
 import { Link } from "react-router-dom";
 import { useParams } from "react-router-dom";
+import { getProduct } from "../../feathers/products/productSlice";
+import userEvent from "@testing-library/user-event";
+import { useDispatch, useSelector } from "react-redux";
+import { useListPostsQuery } from "../../feathers/products/productsServices";
+import Pagination from "../Pagination/Pagination";
 
 const Product = () => {
-  const [product, setProduct] = useState();
-  const [totalPage, setTotalPage] = useState(0);
-
+  const [products,setProduct]=useState([])
+  const [currentPage, setCurrentPage] = useState(1);
+  const [productPerPage,setProductPerPage]=useState(5);
   const [modalShow, setModalShow] = useState(false);
   const [itemModal, setItemModal] = useState();
+
+
+
   const handleModal = (item) => {
     setItemModal(item);
     setModalShow(true);
   };
 
+  const dispatch=useDispatch()
+  const productsALL=useSelector(state=>state.products)
+  // console.log(productsALL) //initialState
 
-  const { id } = useParams();
-
-  const getData = () => {
-    axios
-      .get(`https://jsonplaceholder.typicode.com/photos?_page=${id}&_limit=4`)
-      .then((res) => {
-        setProduct(res.data);
-        const totalProducts=20
-        const totalP = Math.ceil(totalProducts / 4);
-        setTotalPage(totalP);
-      });
-  };
 
   useEffect(() => {
-    getData();
-  }, [id]);
+    dispatch(getProduct())
+  },[]);
+
+
+  useEffect(()=>{
+      if(productsALL!==undefined){
+        setProduct(productsALL.products)
+      }
+  },[productsALL])
+
+  const indexOfLastProduct=currentPage * productPerPage;
+  // console.log(indexOfLastProduct)
+  const indexOfFirstProduct=indexOfLastProduct - productPerPage;
+  // console.log(indexOfFirstProduct);
+  // console.log("products is :", productsALL.products)
+  const currentPosts=products.slice(indexOfFirstProduct, indexOfLastProduct)
+  // console.log("slice products :", currentPosts);
+  const paginate = pageNumber => setCurrentPage(pageNumber);
 
   return (
     <>
       <div>
         <Container>
-          {product === undefined ? (
+          {productsALL.loading? (
             <h3>...Loading</h3>
           ) : (
             <table class="table mt-5">
@@ -52,7 +67,7 @@ const Product = () => {
                 </tr>
               </thead>
               <tbody>
-                {product.map((item) => {
+                {currentPosts.map((item) => {
                   return (
                     <tr>
                       <td>{item.id} </td>
@@ -83,11 +98,10 @@ const Product = () => {
         </Container>
       </div>
       <div className="d-flex flex-row align-items-center justify-content-center bg-opacity-10 bg-danger">
-        {[...Array(totalPage)].map((x, i) => 
-            <Link to={`/admin/products/${i + 1}`} className="p-4">
-              <div className="">{i + 1}</div>
-            </Link>
-             )}
+        <Pagination 
+          paginate={paginate}
+          productPerPage={productPerPage} 
+          totalProducts={products.length}/>
       </div>
     </>
   );
